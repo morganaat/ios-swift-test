@@ -1,11 +1,11 @@
 //
-//  ACNoteModel.swift
+//  Note.swift
 //  TestApp
 //
 //
 
 import Foundation
 
-class NoteModel {
+class Note {
     
 }

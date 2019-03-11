@@ -1,12 +1,18 @@
 //
-//  ViewController.swift
+//  NotesViewController.swift
 //  TestApp
 //
 //
 
 import UIKit
 
-class NoteViewController: UIViewController {
+class NotesViewController: UIViewController {
+
+    // MARK: - Variables
+
+    var presenter: INotesPresenter?
+
+    // MARK: - Override
 
     override func viewDidLoad() {
         super.viewDidLoad()
