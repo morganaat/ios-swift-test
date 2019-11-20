@@ -9,7 +9,7 @@
 import Foundation
 
 
-class SampleNotes {
+struct SampleNotes {
     static var notes: [Note] = [Note(title: "title 1", body: "body 1", timeStamp: Date()),
                                 Note(title: "title 2", body: "body 2", timeStamp: Date()),
                                 Note(title: "title 3", body: "body 3", timeStamp: Date()),

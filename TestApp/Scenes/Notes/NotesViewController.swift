@@ -7,31 +7,39 @@
 import UIKit
 
 class NotesViewController: UIViewController {
+    
+    // MARK: - IBOutlets
+
+    @IBOutlet weak var listTableView: UITableView!
+    
 
     // MARK: - Variables
 
     var presenter: INotesPresenter?
-    
     var notes = [Note]()
-
-    @IBOutlet weak var listTableView: UITableView!
+    
     
     // MARK: - Override
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         NotesManager.getNotes(completionSuccess: { (notes) in
             self.notes = notes
-            for note in notes {
-                print (note.title)
-                print (note.body)
-                print (note.timeStamp)
-                print ("\n")
-            }
         })
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "NewNoteSegue" {
+            let newNoteViewController = segue.destination as! NewNoteViewController
+            newNoteViewController.delegate = self
+        }
+        
+    }
 
 }
 
@@ -52,7 +60,20 @@ extension NotesViewController: UITableViewDelegate, UITableViewDataSource {
 
         return cell
     }
+}
+
+// MARK: - NewNoteViewControllerDelegate
+
+extension NotesViewController: NewNoteViewControllerDelegate {
     
-    
+    func didAddNewNote(_ note: Note) {
+        NotesManager.getNotes(completionSuccess: { (notes) in
+            self.notes = notes
+            DispatchQueue.main.async {
+                self.listTableView.reloadData()
+            }
+        })
+    }
+
 }
 
