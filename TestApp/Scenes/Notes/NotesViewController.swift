@@ -14,6 +14,8 @@ class NotesViewController: UIViewController {
     
     var notes = [Note]()
 
+    @IBOutlet weak var listTableView: UITableView!
+    
     // MARK: - Override
 
     override func viewDidLoad() {
@@ -31,5 +33,26 @@ class NotesViewController: UIViewController {
     }
 
 
+}
+
+// MARK: - UITableViewDelegate
+
+extension NotesViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return notes.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = self.listTableView.dequeueReusableCell(withIdentifier: "ListCellIdentifier") as! ListTableViewCell
+
+        let note = self.notes[indexPath.row]
+        cell.format(note)
+
+        return cell
+    }
+    
+    
 }
 
