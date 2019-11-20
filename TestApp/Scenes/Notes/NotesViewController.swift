@@ -11,17 +11,23 @@ class NotesViewController: UIViewController {
     // MARK: - Variables
 
     var presenter: INotesPresenter?
+    
+    var notes = [Note]()
 
     // MARK: - Override
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+        
+        NotesManager.getNotes(completionSuccess: { (notes) in
+            self.notes = notes
+            for note in notes {
+                print (note.title)
+                print (note.body)
+                print (note.timeStamp)
+                print ("\n")
+            }
+        })
     }
 
 
