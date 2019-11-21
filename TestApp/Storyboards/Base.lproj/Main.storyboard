@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Notes View Controller-->
+        <!--AlayaCare Notes-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="NotesViewController" customModule="TestApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -16,8 +16,15 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="dam-38-8au">
+                                <rect key="frame" x="0.0" y="44" width="375" height="56"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <outlet property="delegate" destination="BYZ-38-t0r" id="g1d-ze-MrT"/>
+                                </connections>
+                            </searchBar>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="120" estimatedRowHeight="120" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="7qA-Ri-a1q">
-                                <rect key="frame" x="0.0" y="44" width="375" height="623"/>
+                                <rect key="frame" x="0.0" y="100" width="375" height="567"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ListCellIdentifier" rowHeight="120" id="bQ1-LM-6nZ" customClass="ListTableViewCell" customModule="TestApp" customModuleProvider="target">
@@ -74,14 +81,17 @@
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="7qA-Ri-a1q" firstAttribute="top" secondItem="EF3-gJ-tbh" secondAttribute="top" id="BUi-qk-kQk"/>
+                            <constraint firstItem="dam-38-8au" firstAttribute="leading" secondItem="EF3-gJ-tbh" secondAttribute="leading" id="7n6-h7-Dw0"/>
+                            <constraint firstItem="7qA-Ri-a1q" firstAttribute="top" secondItem="dam-38-8au" secondAttribute="bottom" id="MVM-Aj-lXf"/>
                             <constraint firstAttribute="trailing" secondItem="7qA-Ri-a1q" secondAttribute="trailing" id="f1k-S6-RLR"/>
                             <constraint firstItem="EF3-gJ-tbh" firstAttribute="bottom" secondItem="7qA-Ri-a1q" secondAttribute="bottom" id="iLB-AO-jBw"/>
+                            <constraint firstItem="dam-38-8au" firstAttribute="top" secondItem="EF3-gJ-tbh" secondAttribute="top" id="lCm-YH-4kL"/>
                             <constraint firstItem="7qA-Ri-a1q" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="qwC-rr-hyg"/>
+                            <constraint firstItem="dam-38-8au" firstAttribute="trailing" secondItem="EF3-gJ-tbh" secondAttribute="trailing" id="uSO-pT-gLa"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="EF3-gJ-tbh"/>
                     </view>
-                    <navigationItem key="navigationItem" id="tjc-jg-2Kq">
+                    <navigationItem key="navigationItem" title="AlayaCare Notes" id="tjc-jg-2Kq">
                         <barButtonItem key="rightBarButtonItem" systemItem="add" id="QsH-pJ-XSe">
                             <connections>
                                 <segue destination="nPE-b9-Dff" kind="show" identifier="NewNoteSegue" id="71f-Nd-AaB"/>
@@ -90,6 +100,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="listTableView" destination="7qA-Ri-a1q" id="5cQ-lA-Fpm"/>
+                        <outlet property="searchBar" destination="dam-38-8au" id="Hu1-Qk-pXr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -11,12 +11,15 @@ class NotesViewController: UIViewController {
     // MARK: - IBOutlets
 
     @IBOutlet weak var listTableView: UITableView!
+    @IBOutlet weak var searchBar: UISearchBar!
     
 
     // MARK: - Variables
 
     var presenter: INotesPresenter?
     var notes = [Note]()
+    var filteredNotes = [Note]()
+    var searchIsActive: Bool = false
     
     
     // MARK: - Override
@@ -27,14 +30,10 @@ class NotesViewController: UIViewController {
             self.notes = notes
         })
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        
-    }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "NewNoteSegue" {
+            self.resetSearch()
             let newNoteViewController = segue.destination as! NewNoteViewController
             newNoteViewController.delegate = self
         }
@@ -48,18 +47,63 @@ class NotesViewController: UIViewController {
 extension NotesViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return notes.count
+        return self.searchIsActive ? self.filteredNotes.count : self.notes.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = self.listTableView.dequeueReusableCell(withIdentifier: "ListCellIdentifier") as! ListTableViewCell
 
-        let note = self.notes[indexPath.row]
+        let notes = self.searchIsActive ? self.filteredNotes : self.notes
+        let note = notes[indexPath.row]
         cell.format(note)
 
         return cell
     }
+}
+
+// MARK: - UISearchBarDelegate
+
+extension NotesViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.searchTextField.resignFirstResponder()
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        self.resetSearch()
+    }
+    
+    func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = true
+        self.searchIsActive = true
+    }
+    
+    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
+        searchBar.showsCancelButton = false
+        self.searchIsActive = false
+    }
+    
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchText.isEmpty {
+            self.searchIsActive = false
+        } else {
+            self.filteredNotes = notes.filter({$0.body.lowercased().contains(searchText.lowercased())})
+            self.searchIsActive = true
+        }
+        
+        self.listTableView.reloadData()
+    }
+    
+    func resetSearch() {
+        self.searchBar.searchTextField.resignFirstResponder()
+        self.searchBar.searchTextField.text = ""
+        self.searchIsActive = false
+        self.listTableView.reloadData()
+    }
+    
 }
 
 // MARK: - NewNoteViewControllerDelegate
