@@ -10,12 +10,12 @@ import UIKit
 
 class ListTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var timestampLabel: UILabel!
     @IBOutlet weak var bodyLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        self.accessoryType = .disclosureIndicator
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -24,9 +24,8 @@ class ListTableViewCell: UITableViewCell {
     }
     
     func format(_ note: Note) {
-        self.titleLabel.text = note.title
-        self.timestampLabel.text = "\(note.timeStamp)"
-        self.bodyLabel.text = note.body
+        self.timestampLabel.text = note.date
+        self.bodyLabel.text = note.noteText
     }
 
 }

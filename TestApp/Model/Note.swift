@@ -7,14 +7,13 @@
 import Foundation
 
 class Note {
-    var title: String
-    var body: String
-    var timeStamp: Date
     
-    init(title: String, body: String, timeStamp: Date) {
-        self.title = title
-        self.body = body
-        self.timeStamp = timeStamp
+    var noteText: String
+    var date: String
+    
+    init(noteText: String, date: String) {
+        self.noteText = noteText
+        self.date = date
     }
 }
 

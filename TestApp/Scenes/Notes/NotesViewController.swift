@@ -17,25 +17,36 @@ class NotesViewController: UIViewController {
     // MARK: - Variables
 
     var presenter: INotesPresenter?
-    var notes = [Note]()
-    var filteredNotes = [Note]()
     var searchIsActive: Bool = false
+    var selectedNote: Note?
+    var filteredNotes = [Note]()
+    var notes: [Note]{
+        return NotesManager.notes
+    }
     
     
     // MARK: - Override
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        NotesManager.getNotes(completionSuccess: { (notes) in
-            self.notes = notes
-        })
+        NotesManager.retrieveData()
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        self.resetSearch()
+
         if segue.identifier == "NewNoteSegue" {
-            self.resetSearch()
             let newNoteViewController = segue.destination as! NewNoteViewController
             newNoteViewController.delegate = self
+            newNoteViewController.viewMode = .newNote
+        
+        } else if segue.identifier == "EditNoteSegue"{
+            guard let selectedNote = self.selectedNote else { return }
+            let newNoteViewController = segue.destination as! NewNoteViewController
+            newNoteViewController.delegate = self
+            newNoteViewController.viewMode = .editNote
+            newNoteViewController.note = selectedNote
+            
         }
         
     }
@@ -60,6 +71,36 @@ extension NotesViewController: UITableViewDelegate, UITableViewDataSource {
 
         return cell
     }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.selectedNote = self.searchIsActive ? self.filteredNotes[indexPath.row] : self.notes[indexPath.row]
+        self.performSegue(withIdentifier: "EditNoteSegue", sender: nil)
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+
+        switch editingStyle {
+        
+        case .delete:
+            
+            let note = self.searchIsActive ? self.filteredNotes[indexPath.row] : self.notes[indexPath.row]
+            
+            NotesManager.deleteData(note: note, completionSuccess: {
+                
+                DispatchQueue.main.async {
+                    
+                    if self.searchIsActive {
+                        self.updateFilteredList()
+                    }
+                    self.listTableView.reloadData()
+                }
+            })
+        
+        default:
+            break
+        }
+    }
+
 }
 
 // MARK: - UISearchBarDelegate
@@ -76,7 +117,7 @@ extension NotesViewController: UISearchBarDelegate {
     
     func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
         searchBar.showsCancelButton = true
-        self.searchIsActive = true
+        self.searchIsActive = false
     }
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
@@ -87,13 +128,7 @@ extension NotesViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        if searchText.isEmpty {
-            self.searchIsActive = false
-        } else {
-            self.filteredNotes = notes.filter({$0.body.lowercased().contains(searchText.lowercased())})
-            self.searchIsActive = true
-        }
-        
+        self.updateFilteredList()
         self.listTableView.reloadData()
     }
     
@@ -104,19 +139,25 @@ extension NotesViewController: UISearchBarDelegate {
         self.listTableView.reloadData()
     }
     
+    func updateFilteredList() {
+        guard let text = self.searchBar.text else { return }
+        if text.isEmpty || text == "" {
+            self.searchIsActive = false
+        } else {
+            self.filteredNotes = notes.filter({$0.noteText.lowercased().contains(text.lowercased())})
+            self.searchIsActive = true
+        }
+    }
+    
 }
 
 // MARK: - NewNoteViewControllerDelegate
 
 extension NotesViewController: NewNoteViewControllerDelegate {
     
-    func didAddNewNote(_ note: Note) {
-        NotesManager.getNotes(completionSuccess: { (notes) in
-            self.notes = notes
-            DispatchQueue.main.async {
-                self.listTableView.reloadData()
-            }
-        })
+    func didUpdateNotes() {
+        self.listTableView.reloadData()
+        
     }
 
 }

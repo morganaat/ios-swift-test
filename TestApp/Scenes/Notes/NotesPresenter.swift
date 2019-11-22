@@ -6,6 +6,8 @@
 
 import Foundation
 
+// TODO: implement the presenter as the MVP pattern design
+
 protocol INotesPresenter {
 
 }
